@@ -1,0 +1,28 @@
+# Path-based labels applied by .github/workflows/pr-checks.yml
+area:docs:
+  - changed-files:
+      - any-glob-to-any-file: ['docs/**', '*.md']
+area:ci:
+  - changed-files:
+      - any-glob-to-any-file: ['.github/**']
+area:auth:
+  - changed-files:
+      - any-glob-to-any-file: ['accounts/**']
+area:datasets:
+  - changed-files:
+      - any-glob-to-any-file: ['datasets/**']
+area:ml-engine:
+  - changed-files:
+      - any-glob-to-any-file: ['mlengine/**']
+area:reports:
+  - changed-files:
+      - any-glob-to-any-file: ['reports/**']
+area:audit-admin:
+  - changed-files:
+      - any-glob-to-any-file: ['audit/**']
+area:frontend:
+  - changed-files:
+      - any-glob-to-any-file: ['templates/**', 'static/**']
+area:tests:
+  - changed-files:
+      - any-glob-to-any-file: ['**/tests/**', '**/test_*.py']

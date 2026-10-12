@@ -1,0 +1,12 @@
+# Planned stack from the Architecture & Design Specification (Section 1.4).
+Django>=4.2,<5.0
+djangorestframework>=3.14
+pandas>=2.0
+numpy>=1.24
+scikit-learn>=1.3
+reportlab>=4.0
+# testing / quality
+pytest>=7.4
+pytest-django>=4.5
+coverage>=7.3
+flake8>=6.1

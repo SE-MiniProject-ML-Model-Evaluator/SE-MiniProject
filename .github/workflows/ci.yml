@@ -1,0 +1,68 @@
+# Continuous Integration: lint + unit tests + coverage on every PR and push to main.
+# Supports SRS NFR-07 (maintainability, >= 70% coverage) and Test Plan TC-24.
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET_KEY: ci-only-not-secret
+      DJANGO_DEBUG: "False"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install flake8 pytest pytest-django coverage
+
+      - name: Lint (flake8)
+        run: |
+          if git ls-files '*.py' | grep -q .; then
+            flake8 . --count --show-source --statistics
+          else
+            echo "No Python files yet - skipping lint"
+          fi
+
+      - name: Django system checks
+        run: |
+          if [ -f manage.py ]; then python manage.py check; else echo "manage.py not found - skipping"; fi
+
+      - name: Unit tests with coverage
+        run: |
+          set +e
+          coverage run -m pytest -q
+          status=$?
+          set -e
+          # pytest exit code 5 = no tests collected (allowed until tests exist)
+          if [ $status -ne 0 ] && [ $status -ne 5 ]; then exit $status; fi
+          coverage report -m || true
+          coverage xml || true
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+          if-no-files-found: ignore
