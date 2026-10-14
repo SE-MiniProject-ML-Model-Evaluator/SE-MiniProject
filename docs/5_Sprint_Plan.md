@@ -129,3 +129,24 @@ Items finished in the dry run count toward Sprint 1.
 - Demo video: `demo/sprint2_demo.mp4`
 - Keep doing:
 - Change:
+
+## 9. GitHub Project Setup Text
+
+Project created from the **Iterative development** template. Field mapping: **Estimate** = story points, **Iteration 1** = Sprint 1 (19-23 Oct), **Iteration 2** = Sprint 2 (26-30 Oct), **Priority** P0 = High, P1 = Medium, P2 = Low, **Size** XS = 1 SP, S = 2, M = 3, L = 5, XL = 8.
+
+**Short description**
+
+> A web application that lets users upload a tabular CSV dataset, choose machine learning models, train and test them, and compare their performance using standard metrics.
+
+**README**
+
+> This project is about a web-based ML model evaluator. The product allows:
+> 1. Users to register, log in and log out securely
+> 2. Upload a CSV dataset, validate it and preview the first 20 rows
+> 3. Select target and feature columns, handle missing values and set the train/test split
+> 4. Choose classification or regression models and edit their hyperparameters
+> 5. Train models in the background and view metrics (accuracy, precision, recall, F1, confusion matrix, MAE, MSE, R²)
+> 6. Compare models side by side, export reports as PDF/CSV and manage evaluation history
+> 7. Admins manage users and view the audit log
+>
+> Sprint 1 (19-23 Oct): working upload-to-metrics flow. Sprint 2 (26-30 Oct): comparison, export, admin, security hardening, testing and documentation.

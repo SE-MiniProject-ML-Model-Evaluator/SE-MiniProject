@@ -20,17 +20,24 @@
 2. **Settings → Branches → Add rule** for `main`: require a pull request, 1 approval, review from Code Owners, status checks `lint-and-test` and `pr-hygiene`.
 3. **Settings → Actions → General:** allow GitHub Actions; workflow permissions **Read and write**.
 4. Replace `REPO_OWNER_USERNAME` in `.github/CODEOWNERS`.
-5. Create the backlog:
+5. **Create the GitHub Project (same as the class demo):**
+   - Repo > **Projects** tab > **New project** > template **Iterative development** > **Create project**.
+   - Project **... > Settings**: set *Project name* `Web Based ML Model Evaluator`, *Default repository* this repo,
+     *Short description* and *README* (text in `docs/5_Sprint_Plan.md`, section 9). **Save changes**.
+   - Settings > **Iteration** field: start date **19 Oct 2026**, duration **1 week**, so Iteration 1 = Sprint 1
+     (19-25 Oct) and Iteration 2 = Sprint 2 (26 Oct-1 Nov). Save.
+   - Note the project number from the URL: `github.com/users/<you>/projects/<N>`.
+6. **Fill the backlog** (creates 30 issues in the Backlog column with Assignee, Priority, Size, Estimate = story points, Iteration):
    ```bash
    gh auth login
    gh auth refresh -s project
-   python scripts/create_backlog.py --repo <owner>/<repo> \
+   python scripts/create_backlog.py --repo <owner>/<repo> --project-number <N> \
      --users "Shreya=<gh-user>,Sneha=<gh-user>,Sukhmeet=<gh-user>" --dry-run   # preview
-   python scripts/create_backlog.py --repo <owner>/<repo> \
+   python scripts/create_backlog.py --repo <owner>/<repo> --project-number <N> \
      --users "Shreya=<gh-user>,Sneha=<gh-user>,Sukhmeet=<gh-user>"
    ```
-6. In the Project: **Workflows** → enable *Item added to project → Todo*, *Item closed → Done*, *Pull request merged → Done*, and *Auto-add to project* (filter `is:issue,pr`).
-7. Add views: **Board** (group by Status), **Sprint table** (group by Sprint, show Story Points, Assignees; sum of Story Points visible in the group header).
+7. In the Project: **Workflows** > enable *Item closed > Done* and *Pull request merged > Done*.
+   The template already has the board (*Current iteration*), *Prioritized backlog* and *Roadmap* views.
 
 ## Running checks locally
 ```bash
