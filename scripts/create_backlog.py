@@ -19,7 +19,8 @@ template fields:
   Estimate  -> story points
   Iteration -> the iteration containing 19 Oct (Sprint 1) or 26 Oct (Sprint 2)
 It also adds a text field "Requirement" (FR/NFR/SR IDs). Re-running is safe: issues whose
-title already exists are skipped.
+title already exists are not created again,
+but they are still added to the Project and get their fields set.
 
 If no --project-number is given, a blank project is created instead and the missing
 fields (Priority, Size, Estimate, and a "Sprint" select in place of Iteration) are added.
@@ -229,23 +230,25 @@ def main():
     fields = ensure_fields(owner, number)
     iters = iteration_ids(fields["Iteration"]) if "Iteration" in fields else {}
 
-    existing_titles = set()
+    existing = {}
     if not DRY:
-        existing_titles = {i["title"] for i in json.loads(run(
-            ["gh", "issue", "list", "--repo", a.repo, "--state", "all", "--limit", "500", "--json", "title"]))}
+        existing = {i["title"]: i["url"] for i in json.loads(run(
+            ["gh", "issue", "list", "--repo", a.repo, "--state", "all", "--limit", "500",
+             "--json", "title,url"]))}
 
     print(f"5/5 issues ({len(rows)})")
     for r in rows:
         title = f"[{r['ID']}] {r['Title']}"
-        if title in existing_titles:
-            print(f"  skip (exists): {title}")
-            continue
-        labels = [f"type:{r['Type'].lower()}", f"priority:{r['Priority'].lower()}",
-                  "sprint-1" if r["Sprint"] == "Sprint 1" else "sprint-2"]
-        url = run(["gh", "issue", "create", "--repo", a.repo, "--title", title,
-                   "--body", issue_body(r), "--label", ",".join(labels),
-                   "--assignee", users[r["Assignee"]], "--milestone", r["Sprint"]])
-        print(f"  created: {title} {url}")
+        if title in existing:
+            url = existing[title]
+            print(f"  exists, adding to project: {title}")
+        else:
+            labels = [f"type:{r['Type'].lower()}", f"priority:{r['Priority'].lower()}",
+                      "sprint-1" if r["Sprint"] == "Sprint 1" else "sprint-2"]
+            url = run(["gh", "issue", "create", "--repo", a.repo, "--title", title,
+                       "--body", issue_body(r), "--label", ",".join(labels),
+                       "--assignee", users[r["Assignee"]], "--milestone", r["Sprint"]])
+            print(f"  created: {title} {url}")
         item = run(["gh", "project", "item-add", str(number), "--owner", owner,
                     "--url", url or "<url>", "--format", "json"])
         if DRY:
