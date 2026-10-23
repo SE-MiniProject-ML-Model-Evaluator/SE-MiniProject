@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Evaluate machine learning models on your own data</h1>
+  <p>Upload a CSV dataset, choose models, train and test them, and compare accuracy, precision, recall, F1 or MAE, MSE and R².</p>
+  <p><a class="btn" href="/accounts/register/">Create an account</a> <a class="btn ghost" href="/accounts/login/">Log in</a></p>
+</section>
+<section class="steps">
+  <div class="card"><h3>1. Upload</h3><p>CSV up to 50 MB, validated and previewed.</p></div>
+  <div class="card"><h3>2. Configure</h3><p>Pick target and features, missing-value handling and test split.</p></div>
+  <div class="card"><h3>3. Train &amp; evaluate</h3><p>Run classic scikit-learn models and see their metrics.</p></div>
+</section>
+{% endblock %}

@@ -1,0 +1,51 @@
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --text: #1d2330; --muted: #5d6676; --line: #dfe3ea;
+  --accent: #2456c9; --accent-ink: #ffffff; --ok: #1f7a4d; --warn: #9a6400; --bad: #b42318;
+  --radius: 8px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); }
+a { color: var(--accent); }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 24px; background: var(--surface); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.brand { font-weight: 700; text-decoration: none; color: var(--text); }
+.topbar nav { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.topbar nav a { text-decoration: none; }
+.who { color: var(--muted); font-size: 13px; }
+.container { max-width: 1040px; margin: 24px auto; padding: 0 16px; }
+.foot { text-align: center; color: var(--muted); font-size: 12px; padding: 24px; }
+h1 { font-size: 26px; margin: 0 0 12px; } h2 { font-size: 20px; margin: 24px 0 12px; } h3 { margin: 0 0 6px; font-size: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.narrow { max-width: 440px; margin: 0 auto; }
+.hero { padding: 24px 0; } .hero p { color: var(--muted); max-width: 640px; }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.btn, button.btn { display: inline-block; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 6px; padding: 9px 16px; font: inherit; cursor: pointer; text-decoration: none; }
+.btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+.btn.small { padding: 5px 12px; font-size: 13px; }
+button.link { background: none; border: 0; color: var(--accent); font: inherit; cursor: pointer; padding: 0; }
+form.inline { display: inline; margin: 0; }
+label { display: block; font-weight: 600; margin: 12px 0 4px; }
+input[type=text], input[type=email], input[type=password], input[type=number], select { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; font: inherit; background: #fff; }
+.help { color: var(--muted); font-size: 13px; margin-top: 4px; }
+.errorlist { color: var(--bad); margin: 4px 0; padding-left: 18px; font-size: 13px; }
+.flash { padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; background: #eaf1ff; border: 1px solid #c9d8fb; }
+.flash.error { background: #fdecea; border-color: #f5c2bd; color: var(--bad); }
+.flash.success { background: #e8f5ee; border-color: #bfe3cf; color: var(--ok); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { background: #f0f2f6; font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; background: #eef0f4; color: var(--muted); }
+.badge.completed { background: #e8f5ee; color: var(--ok); } .badge.failed { background: #fdecea; color: var(--bad); }
+.badge.running, .badge.queued { background: #fff4e0; color: var(--warn); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 4px 16px; }
+.checks label { font-weight: 400; margin: 0; display: flex; gap: 8px; align-items: center; }
+.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0; }
+.metric { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; }
+.metric .v { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.metric .k { color: var(--muted); font-size: 13px; }
+.cm td { text-align: center; min-width: 48px; }
+.muted { color: var(--muted); }
+.empty { padding: 32px; text-align: center; color: var(--muted); }
