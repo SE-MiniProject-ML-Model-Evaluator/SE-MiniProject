@@ -67,6 +67,10 @@ Workflow rules (branches, PRs, reviews) are in [`CONTRIBUTING.md`](CONTRIBUTING.
 │   ├── pull_request_template.md
 │   ├── ISSUE_TEMPLATE/
 │   └── CODEOWNERS
+├── manage.py, mlme/              # Django project
+├── accounts/ datasets/ mlengine/ reports/ audit/   # application components
+├── templates/ static/            # shared web UI
+├── sample_data/                  # demo CSV files
 ├── backlog/backlog.csv           # backlog source of truth
 ├── scripts/create_backlog.py     # creates GitHub Project + issues from the CSV
 ├── demo/                         # sprint demo videos
@@ -78,6 +82,51 @@ Workflow rules (branches, PRs, reviews) are in [`CONTRIBUTING.md`](CONTRIBUTING.
     ├── 5_Sprint_Plan.md
     └── 6_Deviations_Log.md
 ```
+
+## Running the Application Locally
+
+Requires **Python 3.10 or newer** and Git.
+
+**Windows (PowerShell)**
+```powershell
+git clone https://github.com/SE-MiniProject-ML-Model-Evaluator/SE-MiniProject.git
+cd SE-MiniProject
+py -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+py manage.py migrate
+py manage.py runserver
+```
+
+**macOS / Linux**
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
+
+Open <http://127.0.0.1:8000>, register an account and upload one of the files in [`sample_data/`](sample_data/).
+
+| Task | Command |
+|---|---|
+| Run all tests | `pytest` |
+| Tests with coverage | `coverage run -m pytest` then `coverage report` |
+| Lint | `flake8 .` |
+| Django admin user (optional) | `py manage.py createsuperuser`, then open `/django-admin/` |
+
+If PowerShell blocks `Activate.ps1`, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once.
+
+### Code layout
+
+| Folder | Component (Design Spec 2.3) |
+|---|---|
+| `mlme/` | Project settings, URL routing, standard API error format (C2) |
+| `accounts/` | C3 Auth and access control: register, login/logout, owner-only checks |
+| `datasets/` | C4 Dataset service + C12 file storage: upload, validation, preview, configuration |
+| `mlengine/` | C5 data pipeline, C6 model selector, C7 ML engine (metrics), C8 job manager (background training) |
+| `reports/`, `audit/` | C9 reporting and C10 audit (Sprint 2) |
+| `templates/`, `static/` | C1 web UI shared layout and styles |
 
 ## Viewing the Diagrams
 
