@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Results{% endblock %}
+{% block content %}
+<div class="row">
+  <h1>Results · {{ dataset.original_name }}</h1>
+  <a class="btn ghost" href="/evaluations/new/{{ dataset.id }}/">Train more models</a>
+</div>
+{% for e in evaluations %}
+<section class="card" style="margin-bottom:16px" id="eval-{{ e.id }}">
+  <div class="row">
+    <h2 style="margin:0">{{ e.model_label }}</h2>
+    <span class="badge {{ e.status }}" data-status-for="{{ e.id }}">{{ e.status }}</span>
+  </div>
+  {% if e.status == "completed" %}
+    <p class="muted">Trained on {{ e.train_rows }} rows, tested on {{ e.test_rows }} rows in {{ e.duration_s }} s.</p>
+    {% if e.task_type == "classification" %}
+      {% include "mlengine/_metrics_classification.html" with m=e.metrics %}
+    {% else %}
+      {% include "mlengine/_metrics_regression.html" with m=e.metrics %}
+    {% endif %}
+  {% elif e.status == "failed" %}
+    <div class="flash error">{{ e.error_message }}</div>
+  {% else %}
+    <p class="muted">Training in progress… this page updates automatically.</p>
+  {% endif %}
+</section>
+{% endfor %}
+{{ pending|json_script:"pending-ids" }}
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+  var pending = JSON.parse(document.getElementById("pending-ids").textContent);
+  if (!pending.length) return;
+  function poll() {
+    Promise.all(pending.map(function (id) {
+      return fetch("/api/evaluations/" + id, {credentials: "same-origin"}).then(function (r) { return r.json(); });
+    })).then(function (items) {
+      var done = true;
+      items.forEach(function (it) {
+        var badge = document.querySelector('[data-status-for="' + it.id + '"]');
+        if (badge) { badge.textContent = it.status; badge.className = "badge " + it.status; }
+        if (it.status !== "completed" && it.status !== "failed") done = false;
+      });
+      if (done) { window.location.reload(); } else { setTimeout(poll, 1500); }
+    }).catch(function () { setTimeout(poll, 3000); });
+  }
+  setTimeout(poll, 1000);
+})();
+</script>
+{% endblock %}

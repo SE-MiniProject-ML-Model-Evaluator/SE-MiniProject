@@ -48,5 +48,5 @@ def configure(request, pk):
     if request.method == "POST" and form.is_valid():
         config = save_config(dataset, form.cleaned_data)
         messages.success(request, f"Configuration saved. Detected task: {config.task_type}.")
-        return redirect("/datasets/")
+        return redirect(f"/evaluations/new/{dataset.id}/")
     return render(request, "datasets/configure.html", {"dataset": dataset, "form": form})

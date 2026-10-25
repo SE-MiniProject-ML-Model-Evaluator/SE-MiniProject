@@ -10,7 +10,20 @@
   <label>Feature columns (inputs)</label>
   <div class="checks">{% for cb in form.features %}<label>{{ cb.tag }} {{ cb.choice_label }}</label>{% endfor %}</div>
   {{ form.features.errors }}
-  {% block extra_fields %}{% endblock %}
-  <p><button class="btn" type="submit">Save configuration</button></p>
+  <div class="grid2">
+    <div>
+      <label for="id_missing_strategy">Missing values</label>
+      {{ form.missing_strategy }}{{ form.missing_strategy.errors }}
+    </div>
+    <div>
+      <label for="id_test_size">Test set size (%)</label>
+      {{ form.test_size }}<div class="help">Between 10 and 50. Default 20.</div>{{ form.test_size.errors }}
+    </div>
+    <div>
+      <label for="id_random_seed">Random seed</label>
+      {{ form.random_seed }}<div class="help">Same seed = same split (reproducible).</div>{{ form.random_seed.errors }}
+    </div>
+  </div>
+  <p><button class="btn" type="submit">Save and choose models</button></p>
 </form>
 {% endblock %}

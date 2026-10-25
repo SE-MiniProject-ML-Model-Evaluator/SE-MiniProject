@@ -14,7 +14,7 @@
       <td class="num">{{ d.n_cols }}</td>
       <td>{{ d.uploaded_at|date:"d M Y, H:i" }}</td>
       <td>{% if d.is_configured %}{{ d.config.target_column }} <span class="badge">{{ d.config.task_type }}</span>{% else %}<span class="muted">not set</span>{% endif %}</td>
-      <td><a href="/datasets/{{ d.id }}/">Preview</a> · <a href="/datasets/{{ d.id }}/configure/">Configure</a></td>
+      <td><a href="/datasets/{{ d.id }}/">Preview</a> · <a href="/datasets/{{ d.id }}/configure/">Configure</a>{% if d.is_configured %} · <a href="/evaluations/new/{{ d.id }}/">Train</a>{% endif %}</td>
     </tr>
   {% endfor %}
   </tbody>
