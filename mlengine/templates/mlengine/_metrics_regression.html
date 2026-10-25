@@ -1,1 +1,6 @@
-<p class="muted">Regression metrics are added in US-14.</p>
+<div class="metrics">
+  <div class="metric"><div class="k">MAE</div><div class="v">{{ m.mae|floatformat:3 }}</div><div class="k">mean absolute error</div></div>
+  <div class="metric"><div class="k">MSE</div><div class="v">{{ m.mse|floatformat:3 }}</div><div class="k">mean squared error</div></div>
+  <div class="metric"><div class="k">RMSE</div><div class="v">{{ m.rmse|floatformat:3 }}</div><div class="k">√MSE, in target units</div></div>
+  <div class="metric"><div class="k">R²</div><div class="v">{{ m.r2|floatformat:3 }}</div><div class="k">1.0 = perfect fit</div></div>
+</div>
