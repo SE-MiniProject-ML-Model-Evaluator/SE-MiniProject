@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Train models{% endblock %}
+{% block content %}
+<h1>Train models on {{ dataset.original_name }}</h1>
+<div class="grid2">
+  <div class="card">
+    <h3>Configuration</h3>
+    <p class="muted">Task: <strong>{{ config.task_type }}</strong><br>
+      Target: <strong>{{ config.target_column }}</strong><br>
+      Features: {{ config.feature_columns|join:", " }}<br>
+      Missing values: {{ config.get_missing_strategy_display }}<br>
+      Test size: {% widthratio config.test_size 1 100 %}% · Seed: {{ config.random_seed }}</p>
+    <a href="/datasets/{{ dataset.id }}/configure/">Change configuration</a>
+  </div>
+  <form method="post" class="card" novalidate>
+    {% csrf_token %}
+    <h3>Choose models</h3>
+    <div class="checks">{% for cb in form.models %}<label>{{ cb.tag }} {{ cb.choice_label }}</label>{% endfor %}</div>
+    {{ form.models.errors }}
+    <p class="help">Models use default hyperparameters (editing them arrives in Sprint 2).</p>
+    <p><button class="btn" type="submit">Train &amp; evaluate</button></p>
+  </form>
+</div>
+{% endblock %}

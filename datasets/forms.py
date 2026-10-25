@@ -7,9 +7,21 @@ class UploadForm(forms.Form):
 
 
 class ConfigForm(forms.Form):
-    """FR-06: choose one target and one or more feature columns."""
+    """FR-06 to FR-08: target, features, missing-value strategy and train/test split."""
     target = forms.ChoiceField(label="Target column")
     features = forms.MultipleChoiceField(label="Feature columns", widget=forms.CheckboxSelectMultiple)
+
+    # FR-07: missing-value handling, FR-08: split size (percent) and random seed
+    missing_strategy = forms.ChoiceField(
+        label="Missing values", initial="none", required=False,
+        choices=[("none", "None (keep as is)"), ("drop", "Drop rows with missing values"),
+                 ("mean_mode", "Mean / mode imputation")])
+    test_size = forms.IntegerField(
+        label="Test set size (%)", initial=20, min_value=10, max_value=50, required=False,
+        error_messages={"min_value": "Test size must be between 10%% and 50%%.",
+                        "max_value": "Test size must be between 10%% and 50%%."})
+    random_seed = forms.IntegerField(label="Random seed", initial=42, min_value=0, max_value=2**31 - 1,
+                                     required=False)
 
     def __init__(self, *args, columns=(), **kwargs):
         super().__init__(*args, **kwargs)
