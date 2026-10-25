@@ -1,1 +1,19 @@
-<p class="muted">Classification metrics are added in US-13.</p>
+{% load metrics_extras %}
+<div class="metrics">
+  <div class="metric"><div class="k">Accuracy</div><div class="v">{{ m.accuracy|floatformat:3 }}</div><div class="k">{{ m.accuracy|pct }}</div></div>
+  <div class="metric"><div class="k">Precision</div><div class="v">{{ m.precision|floatformat:3 }}</div><div class="k">weighted</div></div>
+  <div class="metric"><div class="k">Recall</div><div class="v">{{ m.recall|floatformat:3 }}</div><div class="k">weighted</div></div>
+  <div class="metric"><div class="k">F1-score</div><div class="v">{{ m.f1|floatformat:3 }}</div><div class="k">weighted</div></div>
+</div>
+<h3>Confusion matrix</h3>
+<p class="muted">Rows are the actual class, columns the predicted class.</p>
+<div class="table-wrap">
+<table class="cm">
+  <thead><tr><th>Actual \ Predicted</th>{% for label in m.labels %}<th>{{ label }}</th>{% endfor %}</tr></thead>
+  <tbody>
+  {% for label, cells in m|cm_rows %}
+    <tr><th>{{ label }}</th>{% for value, level in cells %}<td style="background: color-mix(in srgb, var(--accent) {{ level }}%, white); color: {% if level > 55 %}#fff{% else %}inherit{% endif %}">{{ value }}</td>{% endfor %}</tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
