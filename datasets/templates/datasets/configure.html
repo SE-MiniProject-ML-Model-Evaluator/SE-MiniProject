@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Configure {{ dataset.original_name }}{% endblock %}
+{% block content %}
+<h1>Configure {{ dataset.original_name }}</h1>
+<form method="post" class="card" novalidate>
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <label for="id_target">Target column (what the model predicts)</label>
+  {{ form.target }}{{ form.target.errors }}
+  <label>Feature columns (inputs)</label>
+  <div class="checks">{% for cb in form.features %}<label>{{ cb.tag }} {{ cb.choice_label }}</label>{% endfor %}</div>
+  {{ form.features.errors }}
+  {% block extra_fields %}{% endblock %}
+  <p><button class="btn" type="submit">Save configuration</button></p>
+</form>
+{% endblock %}

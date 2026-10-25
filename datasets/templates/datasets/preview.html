@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ dataset.original_name }}{% endblock %}
+{% block content %}
+<div class="row">
+  <h1>{{ dataset.original_name }}</h1>
+  <a class="btn" href="/datasets/{{ dataset.id }}/configure/">Configure</a>
+</div>
+<p class="muted">{{ dataset.n_rows }} rows · {{ dataset.n_cols }} columns · showing the first {{ rows|length }} rows</p>
+<h2>Columns</h2>
+<div class="checks">
+  {% for c in dataset.columns %}<div><strong>{{ c.name }}</strong> <span class="badge">{{ c.type }}</span></div>{% endfor %}
+</div>
+<h2>Preview</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th class="num">#</th>{% for c in columns %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+  <tbody>
+  {% for row in rows %}
+    <tr><td class="num muted">{{ forloop.counter }}</td>{% for c, v in row.items %}<td>{% if v is None %}<span class="muted">—</span>{% else %}{{ v }}{% endif %}</td>{% endfor %}</tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

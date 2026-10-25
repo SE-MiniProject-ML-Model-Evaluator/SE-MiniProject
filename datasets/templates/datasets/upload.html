@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Upload dataset{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h1>Upload a dataset</h1>
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    <label for="id_file">CSV file</label>
+    <input type="file" name="file" id="id_file" accept=".csv,text/csv" required>
+    <div class="help">{{ form.file.help_text }}</div>
+    {{ form.file.errors }}
+    <p><button class="btn" type="submit">Upload</button></p>
+  </form>
+</div>
+{% endblock %}
