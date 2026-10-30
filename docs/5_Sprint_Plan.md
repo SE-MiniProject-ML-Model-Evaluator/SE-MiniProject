@@ -117,12 +117,12 @@ Items finished in the dry run count toward Sprint 1.
 
 ## 8. Sprint Review and Retrospective Notes
 
-### Sprint 1 (fill in on 23 Oct)
-- Planned SP: 50 · Completed SP: __ · Velocity: __
+### Sprint 1 (19-25 Oct)
+- Planned SP: 50 · Completed SP: 50 · Velocity: 50
 - Demo video: `demo/sprint1_demo.mp4`
-- Carried over to Sprint 2:
-- Keep doing:
-- Change:
+- Carried over to Sprint 2: none
+- Keep doing: one PR per member's backlog items, CI checks on every PR, owner review before merge
+- Change: start PRs earlier in the week; merge in order without waiting so the last PRs aren't rushed
 
 ### Sprint 2 (fill in on 30 Oct)
 - Planned SP: 42 · Completed SP: __
