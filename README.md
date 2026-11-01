@@ -31,16 +31,6 @@ A web application that lets users upload a tabular dataset, choose machine learn
 | 3 | Software Architecture & Design Specification (component diagram, pattern, security architecture, sequence diagrams, API design, error handling) | IEEE 1016 | [`docs/3_Architecture_Design_Spec.md`](docs/3_Architecture_Design_Spec.md) |
 | 4 | Test cases update for the Test Plan | | Section 8 of [`docs/2_Test_Plan.md`](docs/2_Test_Plan.md) |
 
-## Deliverables (Part 2)
-
-| # | Deliverable | Due | File / location |
-|---|---|---|---|
-| 1 | Product backlog from FRs/NFRs/SRs, story points, assignees | 12 Oct | GitHub Project · [`docs/4_Product_Backlog.md`](docs/4_Product_Backlog.md) · [`backlog/backlog.csv`](backlog/backlog.csv) |
-| 2 | Sprint plan (dry run 12-16 Oct, Sprint 1, Sprint 2) | 12 Oct | [`docs/5_Sprint_Plan.md`](docs/5_Sprint_Plan.md) |
-| 3 | GitHub Actions (CI + PR checks) | Sprint 1 | [`.github/workflows/`](.github/workflows/) |
-| 4 | Sprint 1 working product + 1-minute video | 23 Oct | `demo/sprint1_demo.mp4` |
-| 5 | Sprint 2 working product + 2-minute video, final docs | 30 Oct | `demo/sprint2_demo.mp4` |
-| 6 | Deviations from submitted documents | ongoing | [`docs/6_Deviations_Log.md`](docs/6_Deviations_Log.md) |
 
 Workflow rules (branches, PRs, reviews) are in [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
@@ -98,14 +88,6 @@ py manage.py migrate
 py manage.py runserver
 ```
 
-**macOS / Linux**
-```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
-```
-
 Open <http://127.0.0.1:8000>, register an account and upload one of the files in [`sample_data/`](sample_data/).
 
 | Task | Command |
@@ -135,4 +117,5 @@ UML use case, component, ER and sequence diagrams are written in [Mermaid](https
 ## Status
 
 - Part 1 (documentation): complete
-- Part 2: backlog and sprint plan ready; Sprint 1 starts 19 Oct
+- Part 2: Sprint 1: complete
+- Part 3: Sprint 2: (started)
