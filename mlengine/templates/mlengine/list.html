@@ -3,12 +3,18 @@
 {% block content %}
 <h1>Evaluation history</h1>
 {% if evaluations %}
+<form method="get" action="/evaluations/compare/" id="compare-form"></form>
+<div class="row" style="margin-bottom:12px">
+  <p class="muted" style="margin:0">Tick two or more completed evaluations of the same task type to compare them.</p>
+  <button class="btn" type="submit" form="compare-form">Compare selected</button>
+</div>
 <div class="table-wrap">
 <table>
-  <thead><tr><th>Started</th><th>Dataset</th><th>Model</th><th>Task</th><th>Status</th><th class="num">Key metric</th><th>Actions</th></tr></thead>
+  <thead><tr><th></th><th>Started</th><th>Dataset</th><th>Model</th><th>Task</th><th>Status</th><th class="num">Key metric</th><th>Actions</th></tr></thead>
   <tbody>
   {% for e in evaluations %}
     <tr>
+      <td>{% if e.status == "completed" %}<input type="checkbox" name="ids" value="{{ e.id }}" form="compare-form" aria-label="Select {{ e.model_label }}">{% endif %}</td>
       <td>{{ e.created_at|date:"d M Y, H:i" }}</td>
       <td>{{ e.dataset.original_name }}</td>
       <td>{{ e.model_label }}</td>
@@ -16,6 +22,7 @@
       <td><span class="badge {{ e.status }}">{{ e.status }}</span></td>
       <td class="num">{% if e.status == "completed" %}{% if e.task_type == "classification" %}acc {{ e.metrics.accuracy|floatformat:3 }}{% else %}R² {{ e.metrics.r2|floatformat:3 }}{% endif %}{% else %}—{% endif %}</td>
       <td><a href="/evaluations/{{ e.id }}/">View</a> ·
+        {% if e.status == "completed" %}<a href="/api/evaluations/{{ e.id }}/report?format=pdf">PDF</a> ·{% endif %}
         <form method="post" action="/evaluations/{{ e.id }}/delete/" class="inline" onsubmit="return confirm('Delete this evaluation?');">{% csrf_token %}<button class="link danger">Delete</button></form></td>
     </tr>
   {% endfor %}

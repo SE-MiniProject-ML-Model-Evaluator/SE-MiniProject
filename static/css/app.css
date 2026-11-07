@@ -60,3 +60,9 @@ input[type=date] { width: 100%; padding: 7px 10px; border: 1px solid var(--line)
 .model-row summary { cursor: pointer; color: var(--accent); font-size: 13px; }
 .hp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0 12px; }
 .hp-grid label { font-weight: 500; font-size: 13px; margin-top: 8px; }
+td.best { background: #e8f5ee; color: var(--ok); font-weight: 700; }
+.chart-card { height: 360px; }
+.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.chart-small { height: 240px; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 10px; font-size: 13px; color: var(--muted); }
+.chart-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
