@@ -3,7 +3,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
+from audit.services import log_event
 from .forms import LoginForm, RegisterForm
+from .lockout import locked_message, minutes_left, record_failure, record_success
 
 
 def register_view(request):
@@ -27,17 +29,25 @@ def login_view(request, admin=False):
     form = LoginForm(request.POST if request.method == "POST" else None)
     error = None
     if request.method == "POST" and form.is_valid():
-        user = authenticate(request, username=form.cleaned_data["email"].strip().lower(),
-                            password=form.cleaned_data["password"])
-        if user is not None and admin and not user.is_staff:
-            error = NOT_ADMIN
-        elif user is not None:
-            login(request, user)
-            next_url = request.GET.get("next", "")
-            safe = next_url.startswith("/") and not next_url.startswith("//")
-            return redirect(next_url if safe else ("/manage/users/" if admin else "/datasets/"))
+        email = form.cleaned_data["email"].strip().lower()
+        locked_for = minutes_left(email)
+        if locked_for:                                    # SR-05: even the correct password is refused
+            log_event("login_failed", request=request, email=email, detail="account locked")
+            error = locked_message(locked_for)
         else:
-            error = "Invalid email or password."   # generic: no user enumeration
+            user = authenticate(request, username=email, password=form.cleaned_data["password"])
+            if user is not None and admin and not user.is_staff:
+                error = NOT_ADMIN                         # right password, so not counted as a failed login
+            elif user is not None:
+                record_success(user)
+                login(request, user)
+                next_url = request.GET.get("next", "")
+                safe = next_url.startswith("/") and not next_url.startswith("//")
+                return redirect(next_url if safe else ("/manage/users/" if admin else "/datasets/"))
+            elif record_failure(email, request):
+                error = locked_message(minutes_left(email))
+            else:
+                error = "Invalid email or password."   # generic: no user enumeration
     return render(request, "accounts/login.html", {"form": form, "error": error, "admin": admin})
 
 

@@ -4,7 +4,7 @@ import uuid
 
 from rest_framework import status
 from rest_framework.exceptions import (
-    APIException, AuthenticationFailed, NotAuthenticated, NotFound, PermissionDenied, ValidationError,
+    APIException, AuthenticationFailed, NotAuthenticated, NotFound, PermissionDenied, Throttled, ValidationError,
 )
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
@@ -33,6 +33,12 @@ class ApiError(APIException):
 def api_exception_handler(exc, context):
     if isinstance(exc, ApiError):
         return error_response(exc.code, exc.message, exc.status_code, exc.details)
+    if isinstance(exc, Throttled):
+        wait = int(exc.wait or 60)
+        response = error_response("RATE_LIMITED", "Too many requests. Please slow down.", 429,
+                                  {"retry_after_seconds": wait})
+        response["Retry-After"] = str(wait)
+        return response
     if isinstance(exc, ValidationError):
         return error_response("VALIDATION_ERROR", "Some fields are invalid.", 400, exc.detail)
     if isinstance(exc, (NotAuthenticated, AuthenticationFailed)):

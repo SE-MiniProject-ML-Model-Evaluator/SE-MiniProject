@@ -53,3 +53,10 @@ button.link.danger, a.danger { color: var(--bad); }
 .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; align-items: end; margin-bottom: 16px; }
 .filters label { margin-top: 0; }
 input[type=date] { width: 100%; padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; font: inherit; }
+.model-row { border-top: 1px solid var(--line); padding: 8px 0; }
+.model-row:first-of-type { border-top: 0; }
+.model-pick { font-weight: 600; margin: 0; display: flex; gap: 8px; align-items: center; }
+.model-row details { margin: 4px 0 0 26px; }
+.model-row summary { cursor: pointer; color: var(--accent); font-size: 13px; }
+.hp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0 12px; }
+.hp-grid label { font-weight: 500; font-size: 13px; margin-top: 8px; }

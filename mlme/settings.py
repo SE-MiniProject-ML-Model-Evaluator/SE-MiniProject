@@ -82,6 +82,9 @@ LOGIN_REDIRECT_URL = "/datasets/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 # Session cookie hardening (SR-07); Secure flags are switched on in deployment (Sprint 2, SR-04)
+# SR-05: sessions expire after 30 minutes without activity (the expiry is renewed on every request)
+SESSION_COOKIE_AGE = 30 * 60
+SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SAMESITE = "Lax"
@@ -114,6 +117,12 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     "EXCEPTION_HANDLER": "mlme.errors.api_exception_handler",
+    # SR-06: at most 100 API requests per minute per user (per IP when not logged in); excess -> HTTP 429
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.AnonRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {"user": "100/min", "anon": "100/min"},
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
