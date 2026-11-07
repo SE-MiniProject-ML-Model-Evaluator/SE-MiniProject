@@ -1,8 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Log in{% endblock %}
+{% block title %}{% if admin %}Admin login{% else %}Log in{% endif %}{% endblock %}
 {% block content %}
 <div class="card narrow">
-  <h1>Log in</h1>
+  {% if admin %}
+    <h1>Administrator login</h1>
+    <p class="muted">For administrators only. You will go straight to user management and the audit log.</p>
+  {% else %}
+    <h1>Log in</h1>
+  {% endif %}
   {% if error %}<div class="flash error">{{ error }}</div>{% endif %}
   <form method="post" novalidate>
     {% csrf_token %}
@@ -10,8 +15,13 @@
     {{ form.email }}{{ form.email.errors }}
     <label for="id_password">Password</label>
     {{ form.password }}{{ form.password.errors }}
-    <p><button class="btn" type="submit">Log in</button></p>
+    <p><button class="btn" type="submit">{% if admin %}Log in as administrator{% else %}Log in{% endif %}</button></p>
   </form>
-  <p class="muted">New here? <a href="/accounts/register/">Create an account</a></p>
+  {% if admin %}
+    <p class="muted">Not an administrator? <a href="/accounts/login/">Normal log in</a></p>
+  {% else %}
+    <p class="muted">New here? <a href="/accounts/register/">Create an account</a></p>
+    <p class="muted">Administrator? <a href="/accounts/admin-login/">Admin login</a></p>
+  {% endif %}
 </div>
 {% endblock %}

@@ -1,12 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.views.decorators.http import require_POST
 
 from accounts.permissions import get_owned_or_404
 from .config import initial_from, save_config
 from .forms import ConfigForm, UploadForm
 from .models import Dataset
 from .services import preview, store_dataset
+from audit.services import log_event
 from .validation import UploadError
 
 
@@ -50,3 +52,15 @@ def configure(request, pk):
         messages.success(request, f"Configuration saved. Detected task: {config.task_type}.")
         return redirect(f"/evaluations/new/{dataset.id}/")
     return render(request, "datasets/configure.html", {"dataset": dataset, "form": form})
+
+
+@login_required
+@require_POST
+def delete(request, pk):
+    """FR-16: delete a dataset with its file and evaluations."""
+    dataset = get_owned_or_404(Dataset.objects.all(), request.user, pk)
+    name = dataset.original_name
+    dataset.delete()
+    log_event("dataset_delete", user=request.user, request=request, detail=name)
+    messages.success(request, f"Deleted {name} and its evaluations.")
+    return redirect("/datasets/")

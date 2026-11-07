@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Audit log{% endblock %}
+{% block content %}
+<div class="row"><h1>Audit log</h1><a class="btn ghost" href="/manage/users/">Users</a></div>
+<form method="get" class="card filters">
+  <div><label for="f-user">User email</label><input type="text" id="f-user" name="user" value="{{ params.user }}"></div>
+  <div><label for="f-action">Action</label>
+    <select id="f-action" name="action"><option value="">All</option>
+      {% for value, label in actions %}<option value="{{ value }}" {% if params.action == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select></div>
+  <div><label for="f-from">From</label><input type="date" id="f-from" name="date_from" value="{{ params.date_from }}"></div>
+  <div><label for="f-to">To</label><input type="date" id="f-to" name="date_to" value="{{ params.date_to }}"></div>
+  <div class="filter-btn"><button class="btn" type="submit">Filter</button> <a href="/manage/audit/">Clear</a></div>
+</form>
+{% if entries %}
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Detail</th><th>IP</th></tr></thead>
+  <tbody>
+  {% for e in entries %}
+    <tr><td>{{ e.timestamp|date:"d M Y, H:i:s" }}</td><td>{{ e.user_email|default:"—" }}</td>
+      <td><span class="badge">{{ e.get_action_display }}</span></td><td>{{ e.detail }}</td><td class="muted">{{ e.ip_address|default:"" }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<p class="muted">Showing up to 500 most recent entries.</p>
+{% else %}
+<div class="card empty">No entries match these filters.</div>
+{% endif %}
+{% endblock %}

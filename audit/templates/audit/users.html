@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Manage users{% endblock %}
+{% block content %}
+<div class="row"><h1>Users</h1><a class="btn ghost" href="/manage/audit/">Audit log</a></div>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th class="num">Datasets</th><th class="num">Evaluations</th><th>Actions</th></tr></thead>
+  <tbody>
+  {% for p in people %}
+    <tr>
+      <td>{{ p.email|default:p.username }}</td>
+      <td>{% if p.is_staff %}<span class="badge">admin</span>{% else %}user{% endif %}</td>
+      <td>{% if p.is_active %}<span class="badge completed">active</span>{% else %}<span class="badge failed">deactivated</span>{% endif %}</td>
+      <td>{{ p.date_joined|date:"d M Y" }}</td>
+      <td class="num">{{ p.n_datasets }}</td>
+      <td class="num">{{ p.n_evaluations }}</td>
+      <td>
+        {% if p.pk != user.pk %}
+          {% if p.is_active %}
+            <form method="post" action="/manage/users/{{ p.pk }}/deactivate/" class="inline">{% csrf_token %}<button class="link">Deactivate</button></form>
+          {% else %}
+            <form method="post" action="/manage/users/{{ p.pk }}/activate/" class="inline">{% csrf_token %}<button class="link">Activate</button></form>
+          {% endif %}
+          ·
+          {% if p.is_staff %}
+            <form method="post" action="/manage/users/{{ p.pk }}/remove_admin/" class="inline">{% csrf_token %}<button class="link">Remove admin</button></form>
+          {% else %}
+            <form method="post" action="/manage/users/{{ p.pk }}/make_admin/" class="inline">{% csrf_token %}<button class="link">Make admin</button></form>
+          {% endif %}
+          ·
+          <form method="post" action="/manage/users/{{ p.pk }}/delete/" class="inline" onsubmit="return confirm('Delete {{ p.email|escapejs }} and all their data?');">{% csrf_token %}<button class="link danger">Delete</button></form>
+        {% else %}<span class="muted">you</span>{% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}
