@@ -6,7 +6,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from mlme.errors import ApiError
+from audit.services import log_event
 from .forms import RegisterForm
+from .lockout import locked_message, minutes_left, record_failure, record_success
 
 
 class RegisterAPI(APIView):
@@ -35,9 +37,17 @@ class LoginAPI(APIView):
 
     def post(self, request):
         email = str(request.data.get("email", "")).strip().lower()
+        locked_for = minutes_left(email)
+        if locked_for:
+            log_event("login_failed", request=request, email=email, detail="account locked")
+            raise ApiError("ACCOUNT_LOCKED", locked_message(locked_for), 423, {"retry_after_minutes": locked_for})
         user = authenticate(request, username=email, password=request.data.get("password", ""))
         if user is None:
+            if record_failure(email, request):
+                minutes = minutes_left(email)
+                raise ApiError("ACCOUNT_LOCKED", locked_message(minutes), 423, {"retry_after_minutes": minutes})
             raise ApiError("AUTH_INVALID_CREDENTIALS", "Invalid email or password.", status.HTTP_401_UNAUTHORIZED)
+        record_success(user)
         login(request, user)
         return Response({"id": user.id, "email": user.email})
 

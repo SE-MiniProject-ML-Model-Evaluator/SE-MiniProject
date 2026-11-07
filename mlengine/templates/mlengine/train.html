@@ -14,10 +14,28 @@
   </div>
   <form method="post" class="card" novalidate>
     {% csrf_token %}
-    <h3>Choose models</h3>
-    <div class="checks">{% for cb in form.models %}<label>{{ cb.tag }} {{ cb.choice_label }}</label>{% endfor %}</div>
+    <h3>Choose models and hyperparameters</h3>
+    {{ form.non_field_errors }}
     {{ form.models.errors }}
-    <p class="help">Models use default hyperparameters (editing them arrives in Sprint 2).</p>
+    {% for checkbox, params in form.groups %}
+      <div class="model-row">
+        <label class="model-pick">{{ checkbox.tag }} {{ checkbox.choice_label }}</label>
+        <details>
+          <summary>Hyperparameters</summary>
+          <div class="hp-grid">
+            {% for field in params %}
+              <div>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="help">{{ field.help_text }}</div>{% endif %}
+                {{ field.errors }}
+              </div>
+            {% endfor %}
+          </div>
+        </details>
+      </div>
+    {% endfor %}
+    <p class="help">Defaults are pre-filled. Open "Hyperparameters" to change them.</p>
     <p><button class="btn" type="submit">Train &amp; evaluate</button></p>
   </form>
 </div>

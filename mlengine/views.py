@@ -7,6 +7,7 @@ from django.views.decorators.http import require_POST
 from accounts.permissions import get_owned_or_404
 from audit.services import log_event
 from datasets.models import Dataset
+from .catalogue import InvalidModelConfig
 from .forms import TrainForm
 from .jobs import start_evaluations
 from .models import Evaluation
@@ -27,8 +28,13 @@ def train(request, dataset_id):
         return redirect(f"/datasets/{dataset.id}/configure/")
     form = TrainForm(request.POST if request.method == "POST" else None, task_type=dataset.config.task_type)
     if request.method == "POST" and form.is_valid():
-        batch, _ = start_evaluations(request.user, dataset, form.cleaned_data["models"])
-        return redirect(f"/evaluations/run/{batch}/")
+        try:
+            batch, _ = start_evaluations(request.user, dataset, form.cleaned_data["models"],
+                                         form.hyperparameters())
+        except InvalidModelConfig as exc:
+            form.add_error(None, str(exc))
+        else:
+            return redirect(f"/evaluations/run/{batch}/")
     return render(request, "mlengine/train.html", {"dataset": dataset, "config": dataset.config, "form": form})
 
 
@@ -39,7 +45,7 @@ def run_results(request, batch):
     if not evaluations:
         raise Http404("Not found")
     return render(request, "mlengine/results.html", {
-        "evaluations": evaluations, "dataset": evaluations[0].dataset,
+        "evaluations": evaluations, "dataset": evaluations[0].dataset, "batch": batch,
         "pending": [e.id for e in evaluations if not e.is_done]})
 
 
@@ -47,7 +53,7 @@ def run_results(request, batch):
 def evaluation_detail(request, pk):
     evaluation = get_owned_or_404(Evaluation.objects.select_related("dataset"), request.user, pk)
     return render(request, "mlengine/results.html", {
-        "evaluations": [evaluation], "dataset": evaluation.dataset,
+        "evaluations": [evaluation], "dataset": evaluation.dataset, "batch": evaluation.batch,
         "pending": [] if evaluation.is_done else [evaluation.id]})
 
 
