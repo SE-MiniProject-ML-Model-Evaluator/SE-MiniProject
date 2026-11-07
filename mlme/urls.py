@@ -11,4 +11,5 @@ urlpatterns = [
     path("", include("accounts.urls")),
     path("", include("datasets.urls")),
     path("", include("mlengine.urls")),
+    path("", include("audit.urls")),
 ]

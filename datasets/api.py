@@ -10,6 +10,7 @@ from .config import save_config
 from .forms import ConfigForm
 from .models import Dataset
 from .services import preview, store_dataset
+from audit.services import log_event
 from .validation import UploadError
 
 
@@ -36,6 +37,19 @@ class DatasetListCreateAPI(APIView):
         body = _summary(dataset)
         body["preview"] = preview(dataset)
         return Response(body, status=status.HTTP_201_CREATED)
+
+
+class DatasetDetailAPI(APIView):
+    def get(self, request, pk):
+        return Response(_summary(get_owned_or_404(Dataset.objects.all(), request.user, pk)))
+
+    def delete(self, request, pk):
+        """FR-16 (Design Spec 4.1 row 8)."""
+        dataset = get_owned_or_404(Dataset.objects.all(), request.user, pk)
+        name = dataset.original_name
+        dataset.delete()
+        log_event("dataset_delete", user=request.user, request=request, detail=name)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class DatasetPreviewAPI(APIView):

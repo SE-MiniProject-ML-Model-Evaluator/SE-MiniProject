@@ -2,8 +2,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import redirect, render
+from django.views.decorators.http import require_POST
 
 from accounts.permissions import get_owned_or_404
+from audit.services import log_event
 from datasets.models import Dataset
 from .forms import TrainForm
 from .jobs import start_evaluations
@@ -12,7 +14,8 @@ from .models import Evaluation
 
 @login_required
 def evaluation_list(request):
-    evaluations = Evaluation.objects.filter(owner=request.user).select_related("dataset")[:200]
+    """FR-16: history of the user's evaluations (newest first)."""
+    evaluations = Evaluation.objects.filter(owner=request.user).select_related("dataset")[:500]
     return render(request, "mlengine/list.html", {"evaluations": evaluations})
 
 
@@ -46,3 +49,15 @@ def evaluation_detail(request, pk):
     return render(request, "mlengine/results.html", {
         "evaluations": [evaluation], "dataset": evaluation.dataset,
         "pending": [] if evaluation.is_done else [evaluation.id]})
+
+
+@login_required
+@require_POST
+def evaluation_delete(request, pk):
+    """FR-16: delete one evaluation from the history."""
+    evaluation = get_owned_or_404(Evaluation.objects.all(), request.user, pk)
+    label = f"{evaluation.model_label} on {evaluation.dataset.original_name}"
+    evaluation.delete()
+    log_event("evaluation_delete", user=request.user, request=request, detail=label)
+    messages.success(request, f"Deleted evaluation: {label}.")
+    return redirect("/evaluations/")

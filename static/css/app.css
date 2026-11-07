@@ -49,3 +49,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .cm td { text-align: center; min-width: 48px; }
 .muted { color: var(--muted); }
 .empty { padding: 32px; text-align: center; color: var(--muted); }
+button.link.danger, a.danger { color: var(--bad); }
+.filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; align-items: end; margin-bottom: 16px; }
+.filters label { margin-top: 0; }
+input[type=date] { width: 100%; padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; font: inherit; }

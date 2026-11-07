@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.permissions import get_owned_or_404
+from audit.services import log_event
 from datasets.models import Dataset
 from mlme.errors import ApiError
 from .catalogue import CATALOGUE, InvalidModelConfig, public_catalogue
@@ -53,3 +54,11 @@ class EvaluationDetailAPI(APIView):
     def get(self, request, pk):
         evaluation = get_owned_or_404(Evaluation.objects.all(), request.user, pk)
         return Response(evaluation.as_api())
+
+    def delete(self, request, pk):
+        """FR-16 (Design Spec 4.1 row 13)."""
+        evaluation = get_owned_or_404(Evaluation.objects.select_related("dataset"), request.user, pk)
+        label = f"{evaluation.model_label} on {evaluation.dataset.original_name}"
+        evaluation.delete()
+        log_event("evaluation_delete", user=request.user, request=request, detail=label)
+        return Response(status=status.HTTP_204_NO_CONTENT)

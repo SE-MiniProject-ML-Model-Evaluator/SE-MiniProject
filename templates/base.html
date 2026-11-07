@@ -14,10 +14,12 @@
         <a href="/datasets/">Datasets</a>
         <a href="/datasets/upload/">Upload</a>
         <a href="/evaluations/">Evaluations</a>
+        {% if user.is_staff %}<a href="/manage/users/">Admin</a>{% endif %}
         <span class="who">{{ user.email }}</span>
         <form method="post" action="/accounts/logout/" class="inline">{% csrf_token %}<button class="link">Log out</button></form>
       {% else %}
         <a href="/accounts/login/">Log in</a>
+        <a href="/accounts/admin-login/">Admin login</a>
         <a href="/accounts/register/" class="btn small">Register</a>
       {% endif %}
     </nav>
