@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load report_extras static %}
+{% block title %}Compare models{% endblock %}
+{% block content %}
+<div class="row"><h1>Compare models</h1><a class="btn ghost" href="/evaluations/">Back to history</a></div>
+{% if error %}
+  <div class="flash error">{{ error }}</div>
+  <p class="muted">On the <a href="/evaluations/">Evaluation history</a> page, tick two or more completed evaluations of the same task type and click <strong>Compare selected</strong>.</p>
+{% else %}
+  <p class="muted">{{ data.task_type|capfirst }} · {{ data.rows|length }} models · best value in each column is highlighted{% if data.task_type == "regression" %} (lower is better for MAE, MSE and RMSE){% endif %}.</p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Model</th><th>Dataset</th>{% for c in data.columns %}<th class="num">{{ c.label }}</th>{% endfor %}<th>Report</th></tr></thead>
+    <tbody>
+    {% for r in data.rows %}
+      <tr>
+        <td><a href="/evaluations/{{ r.id }}/">{{ r.model }}</a> <span class="muted">#{{ r.id }}</span></td>
+        <td>{{ r.dataset }}</td>
+        {% for c in data.columns %}{% with v=r.metrics|get_item:c.key %}
+          <td class="num{% if data.best|get_item:c.key == r.id %} best{% endif %}">{{ v|floatformat:3 }}</td>
+        {% endwith %}{% endfor %}
+        <td><a href="/api/evaluations/{{ r.id }}/report?format=pdf">PDF</a> · <a href="/api/evaluations/{{ r.id }}/report?format=csv">CSV</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <h2>Chart</h2>
+  {% if data.task_type == "classification" %}
+    <div class="card chart-card"><canvas id="compare-chart" aria-label="Bar chart comparing model metrics" role="img"></canvas></div>
+  {% else %}
+    <p class="muted">One chart per metric, because MSE is on a much larger scale than the others.</p>
+    <div class="chart-legend" id="chart-legend"></div>
+    <div class="chart-grid">
+      {% for c in data.columns %}<div class="card chart-small"><canvas id="chart-{{ c.key }}" aria-label="{{ c.label }} by model" role="img"></canvas></div>{% endfor %}
+    </div>
+  {% endif %}
+  {{ data|json_script:"compare-data" }}
+{% endif %}
+{% endblock %}
+{% block scripts %}
+{% if not error %}
+<script src="{% static 'vendor/chart.umd.js' %}"></script>
+<script>
+(function () {
+  var data = JSON.parse(document.getElementById("compare-data").textContent);
+  var palette = ["#2456c9", "#e8833a", "#2a9d8f", "#9b5de5", "#e63946", "#6c757d", "#f4a261", "#264653"];
+  if (typeof Chart === "undefined") {
+    document.querySelectorAll("canvas").forEach(function (c) {
+      c.outerHTML = '<p class="muted">The chart could not load. The table above has the same values.</p>';
+    });
+    return;
+  }
+  var color = function (i) { return palette[i % palette.length]; };
+  if (data.task_type === "classification") {
+    // all four metrics share the 0-1 scale: one grouped chart, one colour per model
+    new Chart(document.getElementById("compare-chart"), {
+      type: "bar",
+      data: { labels: data.columns.map(function (c) { return c.label; }),
+              datasets: data.rows.map(function (row, i) {
+                return { label: row.model + " (#" + row.id + ")", backgroundColor: color(i),
+                         data: data.columns.map(function (c) { return row.metrics[c.key]; }) }; }) },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } },
+                 scales: { y: { beginAtZero: true, max: 1 } } }
+    });
+  } else {
+    // regression metrics have very different scales: one small chart per metric, shared colour legend
+    document.getElementById("chart-legend").innerHTML = data.rows.map(function (row, i) {
+      return '<span><i style="background:' + color(i) + '"></i>#' + row.id + ' ' + row.model.replace(/</g, "&lt;") + '</span>';
+    }).join("");
+    data.columns.forEach(function (c) {
+      new Chart(document.getElementById("chart-" + c.key), {
+        type: "bar",
+        data: { labels: data.rows.map(function (row) { return "#" + row.id; }),
+                datasets: [{ label: c.label, backgroundColor: data.rows.map(function (r, i) { return color(i); }),
+                             data: data.rows.map(function (row) { return row.metrics[c.key]; }) }] },
+        options: { responsive: true, maintainAspectRatio: false,
+                   plugins: { legend: { display: false }, title: { display: true, text: c.label } },
+                   scales: { y: { beginAtZero: true } } }
+      });
+    });
+  }
+})();
+</script>
+{% endif %}
+{% endblock %}

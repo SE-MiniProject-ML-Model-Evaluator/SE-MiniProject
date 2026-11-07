@@ -13,6 +13,8 @@
   </div>
   {% if e.status == "completed" %}
     <p class="muted">Trained on {{ e.train_rows }} rows, tested on {{ e.test_rows }} rows in {{ e.duration_s }} s.</p>
+    <p><a class="btn small" href="/api/evaluations/{{ e.id }}/report?format=pdf">Download PDF report</a>
+       <a class="btn small ghost" href="/api/evaluations/{{ e.id }}/report?format=csv">Download CSV</a></p>
     <p class="muted">Hyperparameters: {% for k, v in e.hyperparameters.items %}<code>{{ k }}={{ v|default_if_none:"None" }}</code>{% if not forloop.last %}, {% endif %}{% empty %}defaults{% endfor %}</p>
     {% if e.task_type == "classification" %}
       {% include "mlengine/_metrics_classification.html" with m=e.metrics %}

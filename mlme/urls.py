@@ -10,6 +10,7 @@ urlpatterns = [
     # Each component owns its page and API routes (see each app's urls.py)
     path("", include("accounts.urls")),
     path("", include("datasets.urls")),
+    path("", include("reports.urls")),
     path("", include("mlengine.urls")),
     path("", include("audit.urls")),
 ]
