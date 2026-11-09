@@ -62,7 +62,7 @@ WSGI_APPLICATION = "mlme.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": os.environ.get("MLME_DB_PATH", BASE_DIR / "db.sqlite3"),
     }
 }
 
@@ -90,6 +90,15 @@ SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SAMESITE = "Lax"
 X_FRAME_OPTIONS = "DENY"
 SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# SR-04: production hardening when DEBUG is off (Docker / Nginx deployment, see docker-compose.yml)
+CSRF_TRUSTED_ORIGINS = [o for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o]
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")   # Nginx terminates TLS
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_REFERRER_POLICY = "same-origin"
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Kolkata"

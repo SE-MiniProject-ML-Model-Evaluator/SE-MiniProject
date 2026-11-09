@@ -110,6 +110,26 @@ If PowerShell blocks `Activate.ps1`, run `Set-ExecutionPolicy -Scope CurrentUser
 | `reports/`, `audit/` | C9 reporting and C10 audit (Sprint 2) |
 | `templates/`, `static/` | C1 web UI shared layout and styles |
 
+## Running with Docker (HTTPS)
+
+Requires [Docker Desktop](https://www.docker.com/products/docker-desktop/). From the repo folder:
+
+```powershell
+docker compose up --build
+```
+
+Then open **<https://localhost>**. The browser warns about the certificate because it is self-signed for the demo: choose **Advanced → Continue to localhost**. Plain <http://localhost> redirects to HTTPS.
+
+| What runs | Details |
+|---|---|
+| `web` | Django app served by Gunicorn (`deploy/entrypoint.sh` runs migrations and collects static files first) |
+| `nginx` | Reverse proxy: TLS 1.2/1.3, HTTP → HTTPS redirect, HSTS, 50 MB upload limit (`deploy/nginx/nginx.conf`) |
+| Volumes | `app-data` (SQLite database and uploaded datasets), `static-files`, `certs` |
+
+- Stop: `Ctrl + C`, or `docker compose down`. Add `-v` to also delete the data volumes.
+- Admin account: `docker compose exec web python manage.py createsuperuser`
+- For a real deployment, set a strong `DJANGO_SECRET_KEY` and your domain in `DJANGO_ALLOWED_HOSTS` / `DJANGO_CSRF_TRUSTED_ORIGINS` (for example in a `.env` file next to `docker-compose.yml`), and mount a real certificate at `/etc/nginx/certs/server.crt` and `server.key`.
+
 ## Viewing the Diagrams
 
 UML use case, component, ER and sequence diagrams are written in [Mermaid](https://mermaid.js.org/) and render automatically when the Markdown files are viewed on GitHub or GitLab. To export images, paste a diagram block into <https://mermaid.live>.
