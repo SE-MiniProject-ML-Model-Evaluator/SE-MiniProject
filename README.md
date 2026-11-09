@@ -95,6 +95,9 @@ Open <http://127.0.0.1:8000>, register an account and upload one of the files in
 | Run all tests | `pytest` |
 | Tests with coverage | `coverage run -m pytest` then `coverage report` |
 | Lint | `flake8 .` |
+| Coverage gate (NFR-07, also in CI) | `coverage run -m pytest` then `coverage report --include="datasets/*,mlengine/*" --fail-under=70` |
+| Training-time test (NFR-02) | `pytest -m perf`, or `py scripts/benchmark_training.py` to write `docs/test_results/performance_training.md` |
+| Load test (NFR-01, NFR-03) | Start `py manage.py runserver`, then in a second window `py scripts/load_test.py` (20 users, 5 min) to write `docs/test_results/performance_load.md` |
 | Django admin user (optional) | `py manage.py createsuperuser`, then open `/django-admin/` |
 
 If PowerShell blocks `Activate.ps1`, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once.

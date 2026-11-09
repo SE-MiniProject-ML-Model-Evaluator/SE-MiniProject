@@ -63,6 +63,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.environ.get("MLME_DB_PATH", BASE_DIR / "db.sqlite3"),
+        # NFR-03: wait up to 20 s for a write lock instead of failing when several users write at once
+        "OPTIONS": {"timeout": 20},
     }
 }
 

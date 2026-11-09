@@ -8,3 +8,4 @@ class AuditConfig(AppConfig):
 
     def ready(self):
         from . import signals  # noqa: F401  (connects the audit signal handlers)
+        import mlme.db  # noqa: F401  (SQLite WAL mode for concurrent users, NFR-03)

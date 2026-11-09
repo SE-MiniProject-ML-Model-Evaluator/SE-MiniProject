@@ -1,0 +1,12 @@
+# US-24 / NFR-07: coverage of the application code (tests and migrations excluded)
+[run]
+source = accounts, audit, datasets, mlengine, reports, mlme
+omit =
+    */migrations/*
+    */tests/*
+    mlme/wsgi.py
+    mlme/asgi.py
+
+[report]
+show_missing = True
+skip_covered = False
