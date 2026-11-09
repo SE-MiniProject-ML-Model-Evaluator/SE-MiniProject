@@ -56,8 +56,11 @@ jobs:
           set -e
           # pytest exit code 5 = no tests collected (allowed until tests exist)
           if [ $status -ne 0 ] && [ $status -ne 5 ]; then exit $status; fi
-          coverage report -m || true
-          coverage xml || true
+          coverage report
+          coverage xml
+
+      - name: Coverage gate - data and ML modules must be at least 70% (NFR-07, TC-24)
+        run: coverage report --include="datasets/*,mlengine/*" --fail-under=70
 
       - name: Upload coverage report
         if: always()
