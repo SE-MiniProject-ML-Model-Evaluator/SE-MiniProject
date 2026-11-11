@@ -124,11 +124,12 @@ Items finished in the dry run count toward Sprint 1.
 - Keep doing: one PR per member's backlog items, CI checks on every PR, owner review before merge
 - Change: start PRs earlier in the week; merge in order without waiting so the last PRs aren't rushed
 
-### Sprint 2 (fill in on 30 Oct)
-- Planned SP: 42 · Completed SP: __
+### Sprint 2 (26 Oct onwards)
+- Planned SP: 42 · Completed SP: 42
 - Demo video: `demo/sprint2_demo.mp4`
-- Keep doing:
-- Change:
+- Carried over: none
+- Keep doing: one PR per member's items, CI + coverage gate on every PR, owner review before merge
+- Change: begin implementation earlier; enable branch protection from day one
 
 ## 9. GitHub Project Setup Text
 
