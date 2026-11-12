@@ -3,6 +3,14 @@
 ## 1. Overview
 This document summarizes the testing performed for the SE Mini-Project – Web-Based ML Model Evaluator.
 
+Testing used three methods:
+
+Automated tests: pytest unit and integration tests in each app's tests/ folder, run locally and on GitHub Actions.
+Measured tests: scripts in scripts/ for performance and load (results in docs/test_results/).
+Observed tests: manual checks of the running Docker deployment.
+
+Sample datasets used: iris.csv, iris_missing.csv and diabetes.csv (see sample_data/README.md).
+
 ## 2. Functional Testing
 
 | Test | Description | Result |
@@ -30,7 +38,7 @@ This document summarizes the testing performed for the SE Mini-Project – Web-B
 - Checked the GitHub repository Actions/Checks section.
 - Verified the CI workflow status.
 
-**Result: Update according to the actual GitHub CI status.**
+**Result: PASS**
 
 ## 4. ML Model Evaluation
 Tested the application using student_performance_sample.csv.
