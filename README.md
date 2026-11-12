@@ -38,8 +38,10 @@ The application provides a simple interface for comparing machine learning algor
 ## 4. Project Structure
 
 ```text
-SE-MiniProject-fresh/
+SE-MiniProject/
 │
+├── .github/
+├── accounts/
 ├── audit/
 ├── backlog/
 ├── backup/
@@ -51,6 +53,11 @@ SE-MiniProject-fresh/
 ├── mlengine/
 ├── mlme/
 ├── reports/
+├── sample_data/
+├── scripts/
+├── static/
+├── templates/
+├── tests/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
@@ -70,8 +77,8 @@ SE-MiniProject-fresh/
 ### Clone the Repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd SE-MiniProject-fresh
+git clone https://github.com/SE-MiniProject-ML-Model-Evaluator/SE-MiniProject.git
+cd SE-MiniProject
 ```
 
 ### Build and Start the Application
@@ -141,8 +148,6 @@ An ensemble learning algorithm that combines multiple decision trees to improve 
 - Confusion Matrix
 
 ## 8. Screenshots
-
-Add screenshots demonstrating:
 
 1. Application homepage.
 ![alt text](image-6.png)
