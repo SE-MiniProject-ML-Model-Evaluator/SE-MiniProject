@@ -54,7 +54,3 @@ The Web-Based ML Model Evaluator was successfully implemented with CSV upload, m
 The application was deployed using Docker Compose with Nginx handling HTTPS traffic.
 
 The application was tested using sample datasets, and deployment verification was performed.
-
-## 7. Conclusion
-
-Sprint 2 successfully delivered the major application features and deployment configuration. The project is
